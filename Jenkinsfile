@@ -18,7 +18,7 @@ pipeline {
                 python3 -m venv $VENV_DIR
                 source $VENV_DIR/bin/activate
                 pip install --upgrade pip
-                pip install papermill jupyter pandas numpy matplotlib scikit-learn
+                pip install papermill jupyter pandas numpy matplotlib scikit-learn xgboost seaborn 
                 '''
             }
         }
