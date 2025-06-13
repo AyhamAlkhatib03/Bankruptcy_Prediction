@@ -18,7 +18,17 @@ pipeline {
                 python3 -m venv $VENV_DIR
                 source $VENV_DIR/bin/activate
                 pip install --upgrade pip
-                pip install papermill jupyter pandas numpy matplotlib scikit-learn xgboost seaborn 
+                pip install papermill jupyter pandas numpy matplotlib scikit-learn xgboost seaborn
+                '''
+            }
+        }
+
+        stage('Lint Notebook') {
+            steps {
+                sh '''
+                source $VENV_DIR/bin/activate
+                pip install nbqa flake8
+                nbqa flake8 Bankruptcy_Prediction.ipynb || echo "Linting completed with warnings."
                 '''
             }
         }
@@ -32,9 +42,19 @@ pipeline {
             }
         }
 
-        stage('Archive Notebook') {
+        stage('Convert to HTML Report') {
+            steps {
+                sh '''
+                source $VENV_DIR/bin/activate
+                jupyter nbconvert --to html output.ipynb
+                '''
+            }
+        }
+
+        stage('Archive Artifacts') {
             steps {
                 archiveArtifacts artifacts: 'output.ipynb', onlyIfSuccessful: true
+                archiveArtifacts artifacts: 'output.html', onlyIfSuccessful: true
             }
         }
     }
