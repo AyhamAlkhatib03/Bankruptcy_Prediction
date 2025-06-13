@@ -42,6 +42,16 @@ pipeline {
             }
         }
 
+        stage('Run Automated Tests') {
+            steps {
+                sh '''
+                source $VENV_DIR/bin/activate
+                pip install pytest
+                pytest test_model.py --maxfail=1 --disable-warnings -q
+                '''
+            }
+        }
+
         stage('Convert to HTML Report') {
             steps {
                 sh '''
